@@ -18,7 +18,7 @@ exports.handler = async (event, context) => {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
-                'x-API-key': process.env.ANTHROPIC_API_KEY, // Use env variable
+                'x-API-key': process.env.ANTHROPIC_API_KEY,
                 'content-type': 'application/json',
                 'anthropic-version': '2023-06-01'
             },
