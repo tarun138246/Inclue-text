@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inclusive Text Options</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #005ea5;
+            border-radius: 2px;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            background-color: #005ea5;
+            color: white;
+            width: 250px;
+            height: 60px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s;
+        }
+
+        .btn:hover {
+            background-color: #00477e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:focus {
+            outline: 3px solid #ffbf47;
+            outline-offset: 2px;
+        }
+
+        .btn:focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        .btn-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: #005ea5;
+            font-size: 1.5rem;
+        }
+
+        .modal-body p {
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: #444;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.6rem 1.2rem;
+            background-color: #005ea5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+
+        .modal-btn:hover {
+            background-color: #00477e;
+        }
+
+        .modal-btn:focus {
+            outline: 3px solid #ffbf47;
+            outline-offset: 2px;
+        }
+
+        .modal-btn a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+            height: 30px;
+            width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .focus-visible {
+            outline: 3px solid #ffbf47;
+            outline-offset: 2px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #005ea5;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Description text */
+        .description {
+            margin: 0 auto 2rem auto;
+            max-width: 500px;
+            text-align: center;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        /* Additional accessibility features */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inclusive Text</h1>
+        <p class="description">Tools to make your content more accessible and inclusive for all users.</p>
+        <div class="btn-container">
+            <button class="btn" id="simplify-btn" aria-label="Navigate to Text Simplification">
+                <span class="btn-icon">📝</span>Text Simplification
+            </button>
+            <button class="btn" id="alt-btn" aria-label="Navigate to Image ALT Generation">
+                <span class="btn-icon">🖼️</span>Image ALT Generation
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal for Text Simplification -->
+    <div class="modal" id="simplify-modal" role="dialog" aria-labelledby="simplify-modal-title" aria-hidden="true">
+        <div class="modal-content" role="document">
+            <button class="close-btn" aria-label="Close modal">×</button>
+            <div class="modal-header">
+                <h2 id="simplify-modal-title">Text Simplification</h2>
+            </div>
+            <div class="modal-body">
+                <p>This feature helps you simplify complex text to make it more accessible and easier to understand for all users. It can convert jargon, technical language, and complex sentences into clear, straightforward content.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn">
+                    <a href="text-simplifier.html">Proceed</a>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for ALT Generation -->
+    <div class="modal" id="alt-modal" role="dialog" aria-labelledby="alt-modal-title" aria-hidden="true">
+        <div class="modal-content" role="document">
+            <button class="close-btn" aria-label="Close modal">×</button>
+            <div class="modal-header">
+                <h2 id="alt-modal-title">Image ALT Generation</h2>
+            </div>
+            <div class="modal-body">
+                <p>This feature helps you create descriptive alternative text for images to improve accessibility for screen reader users. Good ALT text ensures everyone can understand the purpose and content of images on your website.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn">
+                    <a href="image-alt-generator.html">Proceed</a>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Inclusive Text | <a href="#" aria-label="Accessibility Statement">Accessibility</a> | <a href="#" aria-label="Contact Us">Contact</a></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const buttons = document.querySelectorAll('.btn');
+            
+            buttons.forEach(button => {
+                button.addEventListener('mouseover', function() {
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                button.addEventListener('focus', function() {
+                    this.classList.add('focus-visible');
+                });
+                
+                button.addEventListener('blur', function() {
+                    this.classList.remove('focus-visible');
+                });
+                
+                button.addEventListener('click', function(e) {
+                    let x = e.clientX - e.target.getBoundingClientRect().left;
+                    let y = e.clientY - e.target.getBoundingClientRect().top;
+                    
+                    let ripple = document.createElement('span');
+                    ripple.style.position = 'absolute';
+                    ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.width = '100px';
+                    ripple.style.height = '100px';
+                    ripple.style.left = x - 50 + 'px';
+                    ripple.style.top = y - 50 + 'px';
+                    ripple.style.transform = 'scale(0)';
+                    ripple.style.animation = 'ripple 0.6s linear';
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+            
+            const simplifyBtn = document.getElementById('simplify-btn');
+            const altBtn = document.getElementById('alt-btn');
+            const simplifyModal = document.getElementById('simplify-modal');
+            const altModal = document.getElementById('alt-modal');
+            const closeButtons = document.querySelectorAll('.close-btn, .modal-btn');
+            
+            let previouslyFocusedElement;
+            
+            // Function to open modal
+            function openModal(modal) {
+                previouslyFocusedElement = document.activeElement;
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+                
+                const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                
+                setTimeout(() => {
+                    firstElement.focus();
+                }, 100);
+                
+
+                modal.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstElement) {
+                                e.preventDefault();
+                                lastElement.focus();
+                            }
+                        } 
+                        else {
+                            if (document.activeElement === lastElement) {
+                                e.preventDefault();
+                                firstElement.focus();
+                            }
+                        }
+                    }
+                    
+                    if (e.key === 'Escape') {
+                        closeModal(modal);
+                    }
+                });
+            }
+            
+            function closeModal(modal) {
+                modal.classList.remove('show');
+                
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    
+                    if (previouslyFocusedElement) {
+                        previouslyFocusedElement.focus();
+                    }
+                }, 300);
+            }
+            
+            simplifyBtn.addEventListener('click', function() {
+                openModal(simplifyModal);
+            });
+            
+            altBtn.addEventListener('click', function() {
+                openModal(altModal);
+            });
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+            
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    closeModal(e.target);
+                }
+            });
+            
+            buttons.forEach(button => {
+                button.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
+            });
+            
+            const modalBtns = document.querySelectorAll('.modal-btn');
+            modalBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const link = this.querySelector('a');
+                    if (link) {
+                        window.location.href = link.getAttribute('href');
+                    }
+                });
+            });
+            
+            const interactiveElements = document.querySelectorAll('button, a');
+            interactiveElements.forEach(element => {
+                if (!element.hasAttribute('aria-label') && !element.textContent.trim()) {
+                    console.warn('Interactive element without accessible name:', element);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
